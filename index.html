@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="stylesheet.css">
+		<link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+	</head>
+	<body>
+		<div id="app">
+			<div id="table">
+			<h4>All course members arranged after one of their highest skill<br> Groups are based on common interests.</h4>
+				<div class="row header">
+					<div class="grid roleGrid">
+					</div>
+			        <div class="grid nameGrid">
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('ga')" v-on:mouseleave="reset('ga')" v-on:click="selectGroup('ga')">
+			        	<p class="vertical">Games</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('wo')" v-on:mouseleave="reset('wo')" v-on:click="selectGroup('wo')">
+			        	<p class="vertical">Work out</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('te')" v-on:mouseleave="reset('te')" v-on:click="selectGroup('te')">
+			        	<p class="vertical">Tech</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('ad')" v-on:mouseleave="reset('ad')" v-on:click="selectGroup('ad')">
+			          	<p class="vertical">Design</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('mu')" v-on:mouseleave="reset('mu')" v-on:click="selectGroup('mu')">
+			          	<p class="vertical">Music</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('sp')" v-on:mouseleave="reset('sp')" v-on:click="selectGroup('sp')">
+			          	<p class="vertical">Sport</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('ph')" v-on:mouseleave="reset('ph')" v-on:click="selectGroup('ph')">
+			          	<p class="vertical">Photo</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('fo')" v-on:mouseleave="reset('fo')" v-on:click="selectGroup('fo')">
+			          	<p class="vertical">Food</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('tr')" v-on:mouseleave="reset('tr')" v-on:click="selectGroup('tr')">
+			          	<p class="vertical">Travel</p>
+			        </div>
+			        <div class="grid" v-on:mouseover="highlight('cu')" v-on:mouseleave="reset('cu')" v-on:click="selectGroup('cu')">
+			          	<p class="vertical">Culture</p>
+			        </div>
+			    </div>
+
+				<div class="row" v-for="(item, index) in items">
+					<div class="grid roleGrid">
+						<p class="name">{{item.role}}</p>
+					</div>
+					<div class="grid nameGrid">
+						<p class="name" v-bind:id="'n' + index">{{item.name}}</p>
+					</div>
+					<div class="grid">
+						<div class="circle" v-bind:class="{ active: item.ga }" v-bind:id="'ga' + index">
+						</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.wo }" v-bind:id="'wo' + index">
+					  	</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.te }" v-bind:id="'te' + index">
+					  	</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.ad }" v-bind:id="'ad' + index">
+					  	</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.mu }" v-bind:id="'mu' + index">
+					  	</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.sp }" v-bind:id="'sp' + index">
+					  	</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.ph }" v-bind:id="'ph' + index">
+					  	</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.fo }" v-bind:id="'fo' + index">
+					  	</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.tr }" v-bind:id="'tr' + index">
+					  	</div>
+					</div>
+					<div class="grid">
+					  	<div class="circle" v-bind:class="{ active: item.cu }" v-bind:id="'cu' + index">
+					  	</div>
+					</div>
+				</div>
+			</div>
+			<div id="chart">
+				<h3>Group {{selected.id}}</h3>
+				<h4>Group based on most common interest: {{selected.name}}</h4>
+				<div class="members"><p>Members:&nbsp</p><p v-for="member in selected.members">{{member}}&nbsp</p></div>
+				<h4 class="text-center">Interest distribution within group</h4>
+				<chartjs-bar 
+					:datalabel="interestLabel" 
+					:labels="interestLabels" 
+					:data="interestData" 
+					:bind="true"
+					:backgroundcolor="['#03A9F4', '#03A9F4', '#03A9F4', '#03A9F4', '#03A9F4', '#03A9F4', '#03A9F4', '#03A9F4', '#03A9F4', '#03A9F4']"
+					:width="300" :height="200"
+					:option="interestOption">
+				</chartjs-bar>
+				<h4 class="text-center">Total skills in group</h4>
+				<chartjs-line 
+					:datalabel="skillLabel" 
+					:labels="skillLabels" 
+					:data="skillData" 
+					:bind="true"
+					:option="skillOption"
+					:width="300" :height="200"
+					:backgroundcolor="['#03A9F4', '#03A9F4', '#0288D1', '#039BE5', '#03A9F4', '#29B6F6', '#4FC3F7', '#81D4FA']"
+					:hoverbackgroundcolor="['white', 'white', 'white', 'white', 'white', 'white', 'white', 'white']">
+				</chartjs-line>
+
+			</div>
+		</div>
+
+<script src="https://unpkg.com/vue/dist/vue.min.js"></script>
+<script src="node_modules/chart.js/dist/Chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="node_modules/hchs-vue-charts/dist/vue-charts.js"></script>
+<script src="app.js"></script>
+
+	</body>
+</html>
